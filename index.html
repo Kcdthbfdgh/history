@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</script><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Елагин остров — архитектурный маршрут</title>
 
-<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-<!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
+
 body {
     margin: 0;
     font-family: "Inter", sans-serif;
@@ -32,6 +32,17 @@ nav {
     gap: 30px;
     padding: 15px;
     z-index: 1000;
+}
+
+nav a {
+    color: #e2e8f0;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #38bdf8;
 }
 
 /* HERO */
@@ -56,6 +67,7 @@ nav {
     position: relative;
     font-family: "Playfair Display";
     font-size: 56px;
+    max-width: 800px;
 }
 
 /* SECTIONS */
@@ -73,28 +85,50 @@ nav {
     overflow: hidden;
     backdrop-filter: blur(16px);
     border: 1px solid rgba(255,255,255,0.08);
-    transition: 0.4s;
+    transition: 0.5s;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6);
 }
 
 .card.reverse {
     flex-direction: row-reverse;
 }
 
-.card.active-step {
-    border: 2px solid #38bdf8;
-    box-shadow: 0 0 40px rgba(56,189,248,0.4);
-}
-
 /* IMAGE */
 .card-image {
-    width: 45%;
     position: relative;
+    width: 45%;
 }
 
 .card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    min-height: 280px;
+    transition: transform 0.6s;
+}
+
+.card:hover img {
+    transform: scale(1.08);
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.6));
+}
+
+.tag {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: rgba(0,0,0,0.6);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
 }
 
 /* CONTENT */
@@ -103,32 +137,75 @@ nav {
     width: 55%;
 }
 
+.card h2 {
+    font-family: "Playfair Display";
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #94a3b8;
+    margin-bottom: 15px;
+}
+
+.description {
+    line-height: 1.6;
+    color: #cbd5f5;
+}
+
+.meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.meta span {
+    color: #38bdf8;
+    font-weight: 600;
+}
+
 /* MAP */
 #map {
     height: 520px;
     border-radius: 20px;
-    width: 100%;
+    overflow: hidden;
 }
 
-/* MARKER */
-.custom-marker {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* ACTIVE */
+.active-step {
+    border: 2px solid #38bdf8;
+    box-shadow: 0 0 40px rgba(56,189,248,0.4);
 }
 
-.marker-number {
-    width: 28px;
-    height: 28px;
-    background: #38bdf8;
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    border: 2px solid #fff;
+/* REVEAL */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: 0.8s;
 }
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* RESPONSIVE */
+@media(max-width: 768px) {
+    .card, .card.reverse {
+        flex-direction: column;
+    }
+
+    .card-image, .card-content {
+        width: 100%;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+        padding: 0 20px;
+    }
+}
+
 </style>
 </head>
 
@@ -145,58 +222,151 @@ nav {
 
 <div class="section" id="route">
 
-<div class="card" data-step="1">
+<div class="card reveal" data-step="1">
     <div class="card-image">
         <img src="images/palace.jpg">
+        <div class="overlay"></div>
+        <div class="tag">Главная точка</div>
     </div>
     <div class="card-content">
         <h2>Елагин дворец</h2>
-        <p>Резиденция императорской семьи XIX века</p>
+        <p class="subtitle">Классицизм, XIX век</p>
+
+        <div class="meta">
+  <div><span>Дата:</span> 1818–1822</div>
+  <div><span>Архитектор:</span> Карл Росси</div>
+  <div><span>Тип:</span> Дворец</div>
+</div>
+
+<p class="description">
+Елагин дворец был построен в начале XIX века по проекту архитектора Карла Росси. Он стал летней резиденцией императорской семьи и важным примером русского классицизма. Архитектура дворца отличается симметрией, строгостью форм и гармонией пропорций.
+
+Во внутреннем пространстве использована анфиладная планировка и парадные залы, характерные для дворцовой архитектуры того времени. Вокруг дворца сформирован пейзажный парк, органично связанный с архитектурой здания.
+</p>        
     </div>
 </div>
 
-<div class="card" data-step="2">
+<div class="card reveal" data-step="2">
     <div class="card-image">
         <img src="images/pavilion.jpg">
+        <div class="overlay"></div>
+        <div class="tag">Служебное здание</div>
     </div>
     <div class="card-content">
         <h2>Кухонный корпус</h2>
-        <p>Хозяйственное здание дворцового комплекса</p>
+        <p class="subtitle">
+Функциональное хозяйственное здание, обеспечивавшее работу дворцового комплекса.
+</p>
+
+<div class="meta">
+  <div><span>Дата:</span> начало XIX века</div>
+  <div><span>Архитектор:</span> Карл Росси</div>
+  <div><span>Тип:</span> Служебное здание</div>
+</div>
+
+<p class="description">
+Кухонный корпус является частью дворцово-паркового ансамбля Елагина острова и был спроектирован Карлом Росси как вспомогательное здание для обслуживания императорской резиденции. Он выполнял хозяйственные функции, связанные с приготовлением пищи и обслуживанием дворца.
+
+Архитектурно здание выдержано в стиле классицизма и подчинено общей композиции ансамбля. Несмотря на утилитарное назначение, корпус оформлен в едином стиле с дворцом, что обеспечивает визуальную целостность комплекса и гармоничное восприятие пространства.
+</p>
     </div>
 </div>
 
-<div class="card" data-step="3">
+<div class="card reveal" data-step="3">
     <div class="card-image">
         <img src="images/bridge.jpg">
+        <div class="overlay"></div>
+        <div class="tag">Ландшафт</div>
     </div>
     <div class="card-content">
         <h2>Оранжерея</h2>
-        <p>Выращивание экзотических растений</p>
+        
+<p class="subtitle">
+Архитектурное сооружение для выращивания теплолюбивых растений и элемент садово-паркового искусства.
+</p>
+
+<div class="meta">
+  <div><span>Дата:</span> начало XIX века</div>
+  <div><span>Архитектор:</span> Карл Росси</div>
+  <div><span>Тип:</span> Оранжерея</div>
+</div>
+
+<p class="description">
+Оранжерея на территории Елагина острова входила в состав хозяйственной инфраструктуры дворцового комплекса и предназначалась для выращивания экзотических и декоративных растений, не приспособленных к климату Санкт-Петербурга.
+
+Здание сочетает утилитарную функцию с элементами архитектурной выразительности. Большие оконные проёмы обеспечивают максимальное проникновение света, необходимого для растений. Оранжерея также играла эстетическую роль, дополняя композицию парка и подчеркивая уровень благоустройства императорской резиденции.
+</p>
     </div>
 </div>
 
-<div class="card reverse" data-step="4">
+<div class="card reveal reverse" data-step="4">
     <div class="card-image">
         <img src="images/pier.jpg">
+        <div class="overlay"></div>
+        <div class="tag">Павильон</div>
     </div>
+
     <div class="card-content">
         <h2>Музыкальный павильон</h2>
-        <p>Место проведения концертов</p>
+        <p class="subtitle">
+Малая архитектурная форма, предназначенная для проведения музыкальных выступлений и культурных мероприятий.
+</p>
+
+<div class="meta">
+  <div><span>Дата:</span> XIX век</div>
+  <div><span>Архитектор:</span> Не установлен</div>
+  <div><span>Тип:</span> Павильон</div>
+</div>
+
+<p class="description">
+Музыкальный павильон является частью культурной инфраструктуры дворцово-паркового ансамбля Елагина острова. Он использовался для проведения концертов, камерных выступлений и общественных мероприятий в парковой среде.
+
+Архитектура павильона отличается лёгкостью и открытостью, что обеспечивает хорошую акустику и визуальную связь с окружающим ландшафтом. Такие сооружения были характерны для дворянских усадеб и императорских резиденций, где отдых сочетался с культурной программой.
+</p>
     </div>
 </div>
 
-<div class="card" data-step="5">
+<div class="card reveal" data-step="5">
     <div class="card-image">
         <img src="images/other.jpg">
+        <div class="overlay"></div>
+        <div class="tag">Финал</div>
     </div>
+
     <div class="card-content">
         <h2>Пристань со львами</h2>
-        <p>Финальная точка маршрута</p>
+        <p class="subtitle">
+Декоративный ансамбль на воде, завершающий маршрут и формирующий выразительный визуальный акцент.
+</p>
+
+<div class="meta">
+  <div><span>Дата:</span> XIX век</div>
+  <div><span>Архитектор:</span> Не установлен</div>
+  <div><span>Тип:</span> Пристань</div>
+</div>
+
+<p class="description">
+Пристань со львами является выразительным завершением маршрута. Скульптуры львов символизируют торжественность и выполняют декоративную функцию.
+
+Сооружение объединяет архитектуру, скульптуру и водное пространство, создавая сильный композиционный акцент и финальную точку экскурсии по ансамблю.
+</p>
     </div>
 </div>
 
 </div>
 
+<div class="section" id="map-section">
+<h2>Карта маршрута</h2>
+<div id="map"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.min.js"></script>
+
+<script>
+    
+    
+    
 <div class="section" id="map-section">
 <h2>Карта маршрута</h2>
 <div id="map"></div>
