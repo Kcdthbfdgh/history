@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </script><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -372,11 +372,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 const points = [
     [59.979444, 30.270000],
     [59.9797, 30.2686],
-    [59.9803, 30.2692,
+    [59.9803, 30.2692],
     [59.9767, 30.2686],
     [59.9803, 30.2364]
 ];
-
 points.forEach((p, i) => {
     const marker = L.marker(p).addTo(map);
     marker.on("click", () => highlightStep(i+1));
