@@ -365,8 +365,7 @@ nav a:hover {
 
 <script>
 
-const map = L.map('map');
-
+const map = L.map('map').setView([59.979, 30.26], 15);
 // тайлы (можешь заменить стиль при желании)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
@@ -463,16 +462,18 @@ function highlightStep(id){
 
 // синхронизация при скролле
 window.addEventListener("scroll", () => {
+    let activeIndex = 0;
+
     steps.forEach((el, index) => {
         const rect = el.getBoundingClientRect();
 
-        if(rect.top < window.innerHeight * 0.7){
-            el.classList.add("active-step");
-            map.setView(points[index], 16);
+        if(rect.top < window.innerHeight * 0.5){
+            activeIndex = index;
         }
     });
-});
 
+    highlightStep(activeIndex + 1);
+});
 // анимация появления карточек
 const reveals = document.querySelectorAll(".reveal");
 
