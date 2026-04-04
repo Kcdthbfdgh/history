@@ -106,7 +106,18 @@ nav {
     flex-direction: row-reverse;
 }
 
-/* ================= IMAGE ================= */
+.custom-marker .marker-number {
+    width: 30px;
+    height: 30px;
+    background: #38bdf8;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border: 2px solid white;
+}/* ================= IMAGE ================= */
 .card-image {
     position: relative;
     width: 45%;
@@ -279,17 +290,5 @@ footer {
         font-size: 36px;
         padding: 0 20px;
     }
-    .custom-marker .marker-number {
-    width: 30px;
-    height: 30px;
-    background: #38bdf8;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    border: 2px solid white;
-
-    }
+    
 }
