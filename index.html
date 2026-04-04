@@ -5,49 +5,54 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Елагин остров — архитектурный маршрут</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
 <style>
+
 body {
     margin: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: #0f172a;
+    font-family: "Inter", sans-serif;
+    background: #020617;
     color: #e2e8f0;
-    scroll-behavior: smooth;
 }
 
-/* NAVIGATION */
+/* NAV */
 nav {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(15, 23, 42, 0.9);
     backdrop-filter: blur(10px);
-    padding: 15px;
+    background: rgba(2,6,23,0.6);
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 30px;
+    padding: 15px;
     z-index: 1000;
 }
 
-nav a {
-    color: #e2e8f0;
-    text-decoration: none;
-    font-size: 14px;
-    opacity: 0.8;
-}
-
-nav a:hover {
-    color: #60a5fa;
-}
-
-/* HEADER */
-header {
+/* HERO PARALLAX */
+.hero {
+    height: 100vh;
+    background: url("https://upload.wikimedia.org/wikipedia/commons/6/6c/Yelagin_Palace_St_Petersburg.jpg") center/cover fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 120px 20px 60px;
-    background: linear-gradient(135deg, #1e3a8a, #0f172a);
 }
 
-header h1 {
-    font-size: 42px;
+.hero::after {
+    content:"";
+    position:absolute;
+    inset:0;
+    background: rgba(0,0,0,0.5);
+}
+
+.hero h1 {
+    position: relative;
+    font-family: "Playfair Display";
+    font-size: 54px;
 }
 
 /* SECTIONS */
@@ -55,196 +60,196 @@ header h1 {
     padding: 80px 10%;
 }
 
-/* CARD LAYOUT */
-.route {
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
-}
-
+/* CARDS */
 .card {
     display: flex;
     gap: 20px;
-    background: #1e293b;
+    background: rgba(30,41,59,0.6);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-
-    /* animation base */
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.6s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: 0.4s;
 }
 
-/* SCROLL REVEAL ACTIVE */
-.card.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* HOVER EFFECT */
-.card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 15px 40px rgba(96,165,250,0.2);
-}
-
-/* IMAGE */
 .card img {
     width: 40%;
     object-fit: cover;
 }
 
-/* TEXT */
-.card-content {
-    padding: 20px;
-}
-
-.card h3 {
-    margin-top: 0;
-    color: #60a5fa;
-}
-
-/* ARROWS */
-.arrow {
-    text-align: center;
-    font-size: 28px;
-    opacity: 0.5;
-}
-
 /* MAP */
-.map iframe {
-    width: 100%;
-    height: 450px;
-    border-radius: 12px;
-    border: none;
+#map {
+    height: 500px;
+    border-radius: 16px;
 }
 
-/* FOOTER */
-footer {
-    text-align: center;
-    padding: 30px;
-    opacity: 0.6;
+/* ACTIVE STEP */
+.active-step {
+    border: 2px solid #60a5fa;
+    box-shadow: 0 0 25px rgba(96,165,250,0.6);
 }
 
-/* RESPONSIVE */
-@media(max-width: 768px) {
-    .card {
-        flex-direction: column;
-    }
-    .card img {
-        width: 100%;
-    }
+/* SCROLL REVEAL */
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: 0.8s;
 }
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 </style>
-
 </head>
 
 <body>
 
-<!-- NAV -->
 <nav>
-    <a href="#home">Главная</a>
     <a href="#route">Маршрут</a>
-    <a href="#map">Карта</a>
+    <a href="#map-section">Карта</a>
 </nav>
 
-<!-- HEADER -->
-<header id="home">
-    <h1>Дворцово-парковый ансамбль Елагина острова</h1>
-    <p>Архитектурный маршрут в стиле русского классицизма</p>
-</header>
+<div class="hero">
+    <h1>Елагин остров<br><span style="font-size:20px;opacity:0.7;">архитектурная экскурсия</span></h1>
+</div>
 
-<!-- ROUTE -->
 <div class="section" id="route">
 
-    <div class="route">
-
-        <div class="card">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Yelagin_Palace_St_Petersburg.jpg">
-            <div class="card-content">
-                <h3>1. Елагин дворец</h3>
-                <p><b>Дата:</b> 1818–1822</p>
-                <p><b>Архитектор:</b> Карл Росси</p>
-                <p>Центральный объект ансамбля и бывшая императорская резиденция.</p>
-            </div>
-        </div>
-
-        <div class="arrow">↓</div>
-
-        <div class="card">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Yelagin_Island_Kitchen_Building.jpg">
-            <div class="card-content">
-                <h3>2. Кухонный корпус</h3>
-                <p><b>Дата:</b> 1818–1821</p>
-                <p><b>Архитектор:</b> Карл Росси</p>
-                <p>Служебное здание для обслуживания дворца.</p>
-            </div>
-        </div>
-
-        <div class="arrow">↓</div>
-
-        <div class="card">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Yelagin_Island_Orangery.jpg">
-            <div class="card-content">
-                <h3>3. Оранжерея</h3>
-                <p><b>Дата:</b> 1819–1821</p>
-                <p><b>Архитектор:</b> Карл Росси</p>
-                <p>Использовалась для выращивания растений.</p>
-            </div>
-        </div>
-
-        <div class="arrow">↓</div>
-
-        <div class="card">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Yelagin_Island_Pavilion.jpg">
-            <div class="card-content">
-                <h3>4. Павильон под флагом</h3>
-                <p><b>Дата:</b> начало XIX века</p>
-                <p><b>Архитектор:</b> Карл Росси</p>
-                <p>Парковое декоративное сооружение.</p>
-            </div>
-        </div>
-
-        <div class="arrow">↓</div>
-
-        <div class="card">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Yelagin_Island_Pier_Lions.jpg">
-            <div class="card-content">
-                <h3>5. Пристань со львами</h3>
-                <p><b>Дата:</b> начало XIX века</p>
-                <p><b>Архитектор:</b> Карл Росси</p>
-                <p>Парадная пристань с выходом к воде.</p>
-            </div>
-        </div>
-
-    </div>
+<div class="card reveal" data-step="1">
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Yelagin_Palace_St_Petersburg.jpg">
+<div>
+<h2>Елагин дворец</h2>
+</div>
 </div>
 
-<!-- MAP -->
-<div class="section map" id="map">
-    <h2 style="text-align:center;">📍 Интерактивная карта</h2>
+<br>
 
-    <iframe src="https://www.google.com/maps/d/u/0/edit?mid=1sw6dVGbKoDiEljkGmGrk_nhRtzsneDQ&usp=sharing"></iframe>
+<div class="card reveal" data-step="2">
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Yelagin_Island_Kitchen_Building.jpg">
+<div><h2>Кухонный корпус</h2></div>
 </div>
 
-<footer>
-    <p>Учебный проект</p>
-</footer>
+<br>
 
-<!-- SCROLL REVEAL SCRIPT -->
+<div class="card reveal" data-step="3">
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Yelagin_Island_Orangery.jpg">
+<div><h2>Оранжерея</h2></div>
+</div>
+
+<br>
+
+<div class="card reveal" data-step="4">
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Yelagin_Island_Pavilion.jpg">
+<div><h2>Павильон</h2></div>
+</div>
+
+<br>
+
+<div class="card reveal" data-step="5">
+<img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Yelagin_Island_Pier_Lions.jpg">
+<div><h2>Пристань со львами</h2></div>
+</div>
+
+</div>
+
+<div class="section" id="map-section">
+<h2>Карта маршрута</h2>
+<div id="map"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
-const cards = document.querySelectorAll('.card');
+// ================= MAP =================
+const map = L.map('map').setView([59.985, 30.26], 15);
 
-const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        if(entry.isIntersecting){
-            entry.target.classList.add('show');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// Points
+const points = [
+    [59.9855, 30.2570],
+    [59.9860, 30.2600],
+    [59.9870, 30.2630],
+    [59.9845, 30.2620],
+    [59.9825, 30.2585]
+];
+
+// Markers
+points.forEach((p, i) => {
+    const marker = L.marker(p).addTo(map);
+    marker.on("click", () => highlightStep(i+1));
+});
+
+// ================= DRAW ANIMATED ROUTE =================
+let polyline = L.polyline([], {color: 'cyan'}).addTo(map);
+
+let i = 0;
+function drawLine() {
+    if(i < points.length) {
+        polyline.addLatLng(points[i]);
+        i++;
+        setTimeout(drawLine, 600); // скорость прорисовки
+    }
+}
+drawLine();
+
+// ================= ARROWS ON ROUTE =================
+const arrows = L.polylineDecorator(polyline, {
+    patterns: [
+        {
+            offset: '5%',
+            repeat: '15%',
+            symbol: L.Symbol.arrowHead({
+                pixelSize: 10,
+                polygon: false,
+                pathOptions: {stroke: true}
+            })
+        }
+    ]
+});
+
+// подгрузка после построения линии
+setTimeout(() => arrows.addTo(map), 4000);
+
+// ================= STORY SCROLL =================
+const steps = document.querySelectorAll(".card");
+
+function highlightStep(id){
+    steps.forEach(s => s.classList.remove("active-step"));
+    const el = document.querySelector(`[data-step="${id}"]`);
+    if(el){
+        el.classList.add("active-step");
+        el.scrollIntoView({behavior:"smooth", block:"center"});
+    }
+}
+
+window.addEventListener("scroll", () => {
+    steps.forEach((el, index) => {
+        const rect = el.getBoundingClientRect();
+        if(rect.top < window.innerHeight * 0.7){
+            el.classList.add("active-step");
+            map.setView(points[index], 16);
         }
     });
-}, { threshold: 0.2 });
+});
 
-cards.forEach(card => observer.observe(card));
+// ================= SCROLL REVEAL =================
+const reveals = document.querySelectorAll(".reveal");
+
+window.addEventListener("scroll", () => {
+    reveals.forEach(el => {
+        const top = el.getBoundingClientRect().top;
+        if(top < window.innerHeight - 100){
+            el.classList.add("active");
+        }
+    });
+});
 </script>
+
+<!-- Leaflet plugin for arrows -->
+<script src="https://unpkg.com/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.min.js"></script>
 
 </body>
 </html>
