@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+Исправь мой файл чтобы он стал крутым <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -17,7 +17,6 @@ body {
     background: #020617;
     color: #e2e8f0;
 }
-
 
 /* NAV */
 nav {
@@ -140,29 +139,7 @@ nav {
         padding: 0 20px;
     }
 }
-.custom-marker {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-.marker-number {
-    width: 30px;
-    height: 30px;
-    background: #38bdf8;
-    border-radius: 50%;
-    color: #fff;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid white;
-}
-.active-step {
-    border: 2px solid #60a5fa;
-    box-shadow: 0 0 30px rgba(96,165,250,0.6);
-    transform: scale(1.02);
-}
 </style>
 </head>
 
@@ -348,107 +325,75 @@ nav {
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.min.js"></script>
+
 <script>
-const map = L.map('map').setView([59.98, 30.26], 15);
-// тайлы (можешь заменить стиль при желании)
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
-}).addTo(map);
 
-// точки маршрута
+// MAP
+const map = L.map('map').setView([59.985, 30.26], 15);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// REAL COORDINATES
 const points = [
-    [59.979444, 30.270000],
-    [59.9797, 30.2686],
-    [59.9803, 30.2692],
-    [59.9767, 30.2686],
-    [59.9803, 30.2364]
+    [59.9856, 30.2572],
+    [59.9862, 30.2598],
+    [59.9871, 30.2629],
+    [59.9847, 30.2623],
+    [59.9826, 30.2586]
 ];
 
-// данные для popup
-const info = [
-    {title: "Елагин дворец", fact: "Резиденция императорской семьи XIX века"},
-    {title: "Кухонный корпус", fact: "Обслуживал дворцовый комплекс"},
-    {title: "Оранжерея", fact: "Выращивание экзотических растений"},
-    {title: "Музыкальный павильон", fact: "Место проведения концертов"},
-    {title: "Пристань со львами", fact: "Финальная декоративная точка маршрута"}
-];
-
-// кастомные маркеры с номерами
-let markers = [];
-
+// MARKERS
 points.forEach((p, i) => {
-
-    const icon = L.divIcon({
-        className: 'custom-marker',
-        html: `<div class="marker-number">${i + 1}</div>`,
-        iconSize: [30, 30]
-    });
-
-    const marker = L.marker(p, {icon}).addTo(map);
-
-    marker.bindPopup(`
-        <b>${info[i].title}</b><br>
-        ${info[i].fact}
-    `);
-
-    marker.on("click", () => highlightStep(i + 1));
-
-    markers.push(marker);
+    const marker = L.marker(p).addTo(map);
+    marker.on("click", () => highlightStep(i+1));
 });
 
-// линия маршрута
-const polyline = L.polyline(points, {
-    color: '#38bdf8',
-    weight: 4
-}).addTo(map);
+// ROUTE LINE
+let polyline = L.polyline([], {color: '#22d3ee', weight: 3}).addTo(map);
 
-// стрелки
-const decorator = L.polylineDecorator(polyline, {
-    patterns: [
-        {
-            offset: 25,
-            repeat: 50,
-            symbol: L.Symbol.arrowHead({
-                pixelSize: 10,
-                polygon: false,
-                pathOptions: {
-                    color: '#38bdf8',
-                    weight: 2
-                }
-            })
-        }
-    ]
-}).addTo(map);
+let i = 0;
+function drawLine() {
+    if(i < points.length) {
+        polyline.addLatLng(points[i]);
+        i++;
+        setTimeout(drawLine, 500);
+    }
+}
+drawLine();
 
-// авто-подгон карты под маршрут
-map.fitBounds(polyline.getBounds());
+// ARROWS
+setTimeout(() => {
+    const decorator = L.polylineDecorator(polyline, {
+        patterns: [
+            {
+                offset: 10,
+                repeat: 25,
+                symbol: L.Symbol.arrowHead({
+                    pixelSize: 10,
+                    polygon: false,
+                    pathOptions: {stroke: true}
+                })
+            }
+        ]
+    }).addTo(map);
+}, 3000);
 
-// карточки
+// STORY HIGHLIGHT
 const steps = document.querySelectorAll(".card");
 
-// подсветка активного шага
 function highlightStep(id){
     steps.forEach(s => s.classList.remove("active-step"));
-
     const el = document.querySelector(`[data-step="${id}"]`);
     if(el){
         el.classList.add("active-step");
         el.scrollIntoView({behavior:"smooth", block:"center"});
     }
-
-    // подсветка маркеров
-    markers.forEach(m => m.setOpacity(0.5));
-    markers[id - 1].setOpacity(1);
-
-    // центр карты
-    map.setView(points[id - 1], 16);
 }
 
-// синхронизация при скролле
+// SCROLL STORY
 window.addEventListener("scroll", () => {
     steps.forEach((el, index) => {
         const rect = el.getBoundingClientRect();
-
         if(rect.top < window.innerHeight * 0.7){
             el.classList.add("active-step");
             map.setView(points[index], 16);
@@ -456,7 +401,7 @@ window.addEventListener("scroll", () => {
     });
 });
 
-// анимация появления карточек
+// REVEAL
 const reveals = document.querySelectorAll(".reveal");
 
 window.addEventListener("scroll", () => {
@@ -466,7 +411,8 @@ window.addEventListener("scroll", () => {
         }
     });
 });
-        </script>
-<script src="https://unpkg.com/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.min.js"></script>
+
+</script>
+
 </body>
 </html>
