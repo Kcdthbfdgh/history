@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+
+Исправь мой файл чтобы он стал крутым <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Елагин остров — архитектурный маршрут</title>
-
+<title>Выполнили: Валерия Зайцева и Анастасия Карпенко</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
@@ -15,7 +15,7 @@
 body {
     margin: 0;
     font-family: "Inter", sans-serif;
-    background: linear-gradient(180deg, #020617, #0f172a);
+    background: #020617;
     color: #e2e8f0;
 }
 
@@ -24,24 +24,13 @@ nav {
     position: fixed;
     top: 0;
     width: 100%;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
     background: rgba(2,6,23,0.6);
     display: flex;
     justify-content: center;
     gap: 30px;
     padding: 15px;
     z-index: 1000;
-}
-
-nav a {
-    color: #e2e8f0;
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.3s;
-}
-
-nav a:hover {
-    color: #38bdf8;
 }
 
 /* HERO */
@@ -59,128 +48,75 @@ nav a:hover {
     content:"";
     position:absolute;
     inset:0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.55);
 }
 
 .hero h1 {
     position: relative;
     font-family: "Playfair Display";
-    font-size: 56px;
-    max-width: 800px;
+    font-size: 54px;
 }
 
 /* SECTIONS */
 .section {
-    padding: 100px 10%;
+    padding: 90px 10%;
 }
 
-/* CARD */
+/* LUXURY CARDS */
 .card {
     display: flex;
-    gap: 30px;
-    margin-bottom: 60px;
+    gap: 25px;
     background: rgba(30,41,59,0.55);
-    border-radius: 20px;
+    border-radius: 18px;
     overflow: hidden;
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(14px);
     border: 1px solid rgba(255,255,255,0.08);
     transition: 0.5s;
 }
 
 .card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 40px 100px rgba(0,0,0,0.6);
-}
-
-.card.reverse {
-    flex-direction: row-reverse;
+    transform: translateY(-10px);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
 }
 
 /* IMAGE */
-.card-image {
-    position: relative;
-    width: 45%;
-}
-
-.card-image img {
-    width: 100%;
-    height: 100%;
+.card img {
+    width: 40%;
     object-fit: cover;
-    min-height: 280px;
-    transition: transform 0.6s;
-}
-
-.card:hover img {
-    transform: scale(1.08);
-}
-
-.overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.6));
-}
-
-.tag {
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-    background: rgba(0,0,0,0.6);
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 12px;
+    min-height: 220px;
 }
 
 /* CONTENT */
 .card-content {
-    padding: 25px;
-    width: 55%;
+    padding: 20px;
 }
 
-.card h2 {
-    font-family: "Playfair Display";
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    background: rgba(96,165,250,0.15);
+    color: #60a5fa;
+    border-radius: 999px;
+    font-size: 12px;
     margin-bottom: 10px;
-}
-
-.subtitle {
-    color: #94a3b8;
-    margin-bottom: 15px;
-}
-
-.description {
-    line-height: 1.6;
-    color: #cbd5f5;
-}
-
-.meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin: 15px 0;
-    font-size: 14px;
-}
-
-.meta span {
-    color: #38bdf8;
-    font-weight: 600;
 }
 
 /* MAP */
 #map {
     height: 520px;
-    border-radius: 20px;
-    overflow: hidden;
+    border-radius: 18px;
 }
 
 /* ACTIVE */
 .active-step {
-    border: 2px solid #38bdf8;
-    box-shadow: 0 0 40px rgba(56,189,248,0.4);
+    border: 2px solid #60a5fa;
+    box-shadow: 0 0 30px rgba(96,165,250,0.6);
 }
 
 /* REVEAL */
 .reveal {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(50px);
     transition: 0.8s;
 }
 
@@ -191,16 +127,16 @@ nav a:hover {
 
 /* RESPONSIVE */
 @media(max-width: 768px) {
-    .card, .card.reverse {
+    .card {
         flex-direction: column;
     }
 
-    .card-image, .card-content {
+    .card img {
         width: 100%;
     }
 
     .hero h1 {
-        font-size: 32px;
+        font-size: 34px;
         padding: 0 20px;
     }
 }
@@ -215,119 +151,172 @@ nav a:hover {
     <a href="#map-section">Карта</a>
 </nav>
 
-<div class="hero">
-    <h1>Архитектурный маршрут по Елагиному острову</h1>
-</div>
+<div class="card reveal" data-step="1">
 
+    <div class="card-image">
+        <img src="images/palace.jpg" alt="Елагин дворец">
+        <div class="overlay"></div>
+        <div class="tag">Главная точка маршрута</div>
+    </div>
+</div>
 <div class="section" id="route">
 
+<!-- CARD TEMPLATE -->
 <div class="card reveal" data-step="1">
-    <div class="card-image">
-        <img src="images/palace.jpg">
-        <div class="overlay"></div>
-        <div class="tag">Главная точка</div>
-    </div>
-    <div class="card-content">
+<img src="images/palace.jpg" alt="">    
+<div class="card-content">
         <h2>Елагин дворец</h2>
-        <p class="subtitle">Классицизм, XIX век</p>
+        
+        <p class="subtitle">
+            Ключевой архитектурный объект острова, выполненный в стиле 
+            классицизма с элементами утончённой симметрии и гармонии.
+        </p>
 
         <div class="meta">
+            <div><span>Стиль:</span> Классицизм</div>
+            <div><span>Период:</span> XIX век</div>
             <div><span>Архитектор:</span> Карл Росси</div>
-            <div><span>Тип:</span> Дворец</div>
         </div>
 
         <p class="description">
-            Центральный элемент ансамбля с симметричной композицией и колоннадой.
+            Дворец был построен как загородная резиденция и отличается строгими 
+            пропорциями, колоннадой и светлой композиционной структурой. 
+            Сегодня является центральной точкой культурного маршрута острова.
         </p>
     </div>
-</div>
+
+<br>
 
 <div class="card reveal" data-step="2">
+
     <div class="card-image">
-        <img src="images/kitchen.jpg">
+        <img src="images/kitchen.jpg" alt="Кухонный корпус">
         <div class="overlay"></div>
-        <div class="tag">Служебное здание</div>
+        <div class="tag">Историческое служебное здание</div>
     </div>
+
     <div class="card-content">
         <h2>Кухонный корпус</h2>
-        <p class="subtitle">Функциональная архитектура</p>
+
+        <p class="subtitle">
+            Архитектурный элемент дворцового ансамбля, предназначенный для 
+            хозяйственных и обслуживающих функций резиденции.
+        </p>
 
         <div class="meta">
-            <div><span>Тип:</span> Служебный</div>
+            <div><span>Тип:</span> Служебное здание</div>
             <div><span>Период:</span> XIX век</div>
+            <div><span>Контекст:</span> Дворцовый комплекс</div>
         </div>
 
         <p class="description">
-            Отдельное здание для обеспечения безопасности и логистики дворца.
+            Кухонный корпус был спроектирован отдельно от основного дворца 
+            для обеспечения пожарной безопасности и функционального разделения 
+            процессов приготовления пищи. Соединяется с ансамблем через 
+            логистические и архитектурные связи, сохраняя общую стилистику комплекса.
         </p>
     </div>
+
 </div>
+<br>
 
 <div class="card reveal" data-step="3">
+
     <div class="card-image">
-        <img src="images/orangery.jpg">
+        <img src="images/orangery.jpg" alt="Оранжерея">
         <div class="overlay"></div>
-        <div class="tag">Ландшафт</div>
+        <div class="tag">Ландшафтная архитектура</div>
     </div>
+
     <div class="card-content">
         <h2>Оранжерея</h2>
-        <p class="subtitle">Интеграция архитектуры и природы</p>
+
+        <p class="subtitle">
+            Пространство, предназначенное для выращивания растений и демонстрации 
+            декоративной флоры в рамках дворцового ансамбля.
+        </p>
 
         <div class="meta">
             <div><span>Тип:</span> Оранжерея</div>
             <div><span>Функция:</span> Ботаническая</div>
+            <div><span>Среда:</span> Парковый комплекс</div>
         </div>
 
         <p class="description">
-            Пространство перехода между архитектурой и природным окружением.
+            Оранжерея является частью садово-парковой структуры острова и 
+            отражает традиции интеграции архитектуры и природы. 
+            Пространство формирует переход между строгой архитектурой дворца 
+            и естественным ландшафтом.
         </p>
     </div>
+
 </div>
+<br>
 
 <div class="card reveal reverse" data-step="4">
-    <div class="card-image">
-        <img src="images/pavilion.jpg">
-        <div class="overlay"></div>
-        <div class="tag">Павильон</div>
-    </div>
 
     <div class="card-content">
         <h2>Павильон</h2>
-        <p class="subtitle">Рекреационный объект</p>
+
+        <p class="subtitle">
+            Лёгкое архитектурное сооружение, предназначенное для отдыха 
+            и созерцания в структуре паркового ансамбля.
+        </p>
 
         <div class="meta">
             <div><span>Тип:</span> Павильон</div>
-            <div><span>Функция:</span> Отдых</div>
+            <div><span>Функция:</span> Рекреационная</div>
+            <div><span>Расположение:</span> Парковая зона</div>
         </div>
 
         <p class="description">
-            Лёгкая архитектура как визуальный акцент в парковой среде.
+            Павильон служит архитектурным акцентом в ландшафте и формирует 
+            точки визуального притяжения в пространстве парка. 
+            Его лёгкая структура контрастирует с монументальностью дворца, 
+            создавая баланс между архитектурой и природой.
         </p>
     </div>
+
+    <div class="card-image">
+        <img src="images/pavilion.jpg" alt="Павильон">
+        <div class="overlay"></div>
+        <div class="tag">Ландшафтный объект</div>
+    </div>
+
 </div>
+<br>
 
 <div class="card reveal" data-step="5">
+
     <div class="card-image">
-        <img src="images/lions.jpg">
+        <img src="images/lions.jpg" alt="Пристань со львами">
         <div class="overlay"></div>
-        <div class="tag">Финал</div>
+        <div class="tag">Финальная точка маршрута</div>
     </div>
 
     <div class="card-content">
         <h2>Пристань со львами</h2>
-        <p class="subtitle">Водный вход</p>
+
+        <p class="subtitle">
+            Один из самых узнаваемых архитектурных элементов острова, 
+            формирующий торжественный вход со стороны воды.
+        </p>
 
         <div class="meta">
             <div><span>Тип:</span> Пристань</div>
-            <div><span>Символика:</span> Львы</div>
+            <div><span>Элемент:</span> Скульптурная композиция</div>
+            <div><span>Контекст:</span> Водный подход</div>
         </div>
 
         <p class="description">
-            Завершающая точка маршрута и парадный вход с воды.
+            Пристань украшена скульптурами львов, символизирующих силу и 
+            торжественность архитектурного ансамбля. Это завершающая точка 
+            маршрута, которая формирует первое и последнее впечатление 
+            о пространстве острова при подходе с воды.
         </p>
     </div>
-</div>
 
+</div>
 </div>
 
 <div class="section" id="map-section">
@@ -340,10 +329,12 @@ nav a:hover {
 
 <script>
 
+// MAP
 const map = L.map('map').setView([59.985, 30.26], 15);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
+// REAL COORDINATES
 const points = [
     [59.9856, 30.2572],
     [59.9862, 30.2598],
@@ -352,12 +343,14 @@ const points = [
     [59.9826, 30.2586]
 ];
 
+// MARKERS
 points.forEach((p, i) => {
     const marker = L.marker(p).addTo(map);
     marker.on("click", () => highlightStep(i+1));
 });
 
-let polyline = L.polyline([], {color: '#38bdf8', weight: 3}).addTo(map);
+// ROUTE LINE
+let polyline = L.polyline([], {color: '#22d3ee', weight: 3}).addTo(map);
 
 let i = 0;
 function drawLine() {
@@ -369,6 +362,24 @@ function drawLine() {
 }
 drawLine();
 
+// ARROWS
+setTimeout(() => {
+    const decorator = L.polylineDecorator(polyline, {
+        patterns: [
+            {
+                offset: 10,
+                repeat: 25,
+                symbol: L.Symbol.arrowHead({
+                    pixelSize: 10,
+                    polygon: false,
+                    pathOptions: {stroke: true}
+                })
+            }
+        ]
+    }).addTo(map);
+}, 3000);
+
+// STORY HIGHLIGHT
 const steps = document.querySelectorAll(".card");
 
 function highlightStep(id){
@@ -380,6 +391,7 @@ function highlightStep(id){
     }
 }
 
+// SCROLL STORY
 window.addEventListener("scroll", () => {
     steps.forEach((el, index) => {
         const rect = el.getBoundingClientRect();
@@ -390,6 +402,7 @@ window.addEventListener("scroll", () => {
     });
 });
 
+// REVEAL
 const reveals = document.querySelectorAll(".reveal");
 
 window.addEventListener("scroll", () => {
