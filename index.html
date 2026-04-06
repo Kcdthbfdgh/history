@@ -1,242 +1,309 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Интерактивный маршрут</title>
+<title>Елагин остров — архитектурный маршрут</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<link rel="stylesheet" href="style.css">
 
+<style>
+
+body {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    background: #020617;
+    color: #e2e8f0;
+}
+
+/* NAV */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    background: rgba(2,6,23,0.6);
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 15px;
+    z-index: 1000;
+}
+
+/* HERO */
+.hero {
+    height: 100vh;
+    background: url("https://upload.wikimedia.org/wikipedia/commons/6/6c/Yelagin_Palace_St_Petersburg.jpg") center/cover fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+.hero::after {
+    content:"";
+    position:absolute;
+    inset:0;
+    background: rgba(0,0,0,0.55);
+}
+
+.hero h1 {
+    position: relative;
+    font-family: "Playfair Display";
+    font-size: 54px;
+}
+
+/* SECTIONS */
+.section {
+    padding: 90px 10%;
+}
+
+/* LUXURY CARDS */
+.card {
+    display: flex;
+    gap: 25px;
+    background: rgba(30,41,59,0.55);
+    border-radius: 18px;
+    overflow: hidden;
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: 0.5s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+}
+
+/* IMAGE */
+.card img {
+    width: 40%;
+    object-fit: cover;
+    min-height: 220px;
+}
+
+/* CONTENT */
+.card-content {
+    padding: 20px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    background: rgba(96,165,250,0.15);
+    color: #60a5fa;
+    border-radius: 999px;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+/* MAP */
+#map {
+    height: 520px;
+    border-radius: 18px;
+}
+
+/* ACTIVE */
+.active-step {
+    border: 2px solid #60a5fa;
+    box-shadow: 0 0 30px rgba(96,165,250,0.6);
+}
+
+/* REVEAL */
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: 0.8s;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* RESPONSIVE */
+@media(max-width: 768px) {
+    .card {
+        flex-direction: column;
+    }
+
+    .card img {
+        width: 100%;
+    }
+
+    .hero h1 {
+        font-size: 34px;
+        padding: 0 20px;
+    }
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="container">
+<nav>
+    <a href="#route">Маршрут</a>
+    <a href="#map-section">Карта</a>
+</nav>
 
-<!-- ================= HEADER ================= -->
-<header class="hero">
-    <h1>Интерактивный маршрут</h1>
-    <p>Архитектура, история и пространство Елагина острова</p>
-</header>
+<div class="hero">
+    <h1>Елагин остров<br><span style="font-size:18px;opacity:0.7;">архитектурная экскурсия</span></h1>
+</div>
 
-<!-- ================= ROUTE ================= -->
 <div class="section" id="route">
 
-<!-- ================= CARD 1 ================= -->
-<div class="card reveal" data-step="1" id="step-1">
+<!-- CARD TEMPLATE -->
 
-<div class="card-image">
-<img src="images/palace.jpg">
-<div class="overlay"></div>
-<div class="tag">Главная точка</div>
-</div>
-
+<div class="card reveal" data-step="1">
+<img src="images/palace.jpg" alt="">
 <div class="card-content">
+<div class="badge">Главная точка</div>
 <h2>Елагин дворец</h2>
-<p class="subtitle">Классицизм, XIX век</p>
-
-<div class="meta">
-<div><span>Дата:</span> 1818–1822</div>
-<div><span>Архитектор:</span> Карл Росси</div>
-<div><span>Тип:</span> Дворец</div>
-</div>
-
-<p class="description">
-Елагин дворец представляет собой один из наиболее значимых архитектурных памятников эпохи классицизма. 
-Он был построен как летняя резиденция императорской семьи и отражает эстетические принципы строгости, симметрии и гармонии.
-
-Архитектурная композиция здания выстроена вокруг центральной оси, что создаёт ощущение баланса и монументальности. 
-Интерьеры дворца включают анфилады залов, парадные помещения и декоративные элементы, характерные для императорских резиденций XIX века.
-
-Дворец тесно связан с окружающим парком, который формирует единое пространственное и визуальное восприятие ансамбля.
-</p>
-
 </div>
 </div>
 
-<!-- ================= CARD 2 ================= -->
-<div class="card reveal" data-step="2" id="step-2">
+<br>
 
-<div class="card-image">
-<img src="images/pavilion.jpg">
-<div class="overlay"></div>
-<div class="tag">Служебное здание</div>
-</div>
-
+<div class="card reveal" data-step="2">
+<img src="images/kitchen.jpg" alt="">
 <div class="card-content">
+<div class="badge">Историческое здание</div>
 <h2>Кухонный корпус</h2>
-<p class="subtitle">Инфраструктура дворца</p>
-
-<div class="meta">
-<div><span>Дата:</span> начало XIX века</div>
-<div><span>Архитектор:</span> Карл Росси</div>
-<div><span>Тип:</span> Служебное здание</div>
-</div>
-
-<p class="description">
-Кухонный корпус выполнял важную утилитарную функцию в составе дворцового комплекса. 
-Он обеспечивал приготовление пищи и логистику обслуживания резиденции.
-
-Несмотря на хозяйственное назначение, здание выполнено в архитектурной стилистике классицизма и органично интегрировано в ансамбль. 
-Его пропорции и фасадные решения подчинены общей композиционной логике территории.
-
-Такие сооружения демонстрируют, как функциональные элементы становились частью архитектурной системы высокого уровня.
-</p>
-
 </div>
 </div>
 
-<!-- ================= CARD 3 ================= -->
-<div class="card reveal" data-step="3" id="step-3">
+<br>
 
-<div class="card-image">
-<img src="images/bridge.jpg">
-<div class="overlay"></div>
-<div class="tag">Ландшафт</div>
-</div>
-
+<div class="card reveal" data-step="3">
+<img src="images/orangery.jpg" alt="">
 <div class="card-content">
+<div class="badge">Оранжерея</div>
 <h2>Оранжерея</h2>
-<p class="subtitle">Садово-парковая архитектура</p>
-
-<div class="meta">
-<div><span>Дата:</span> начало XIX века</div>
-<div><span>Архитектор:</span> Карл Росси</div>
-<div><span>Тип:</span> Оранжерея</div>
-</div>
-
-<p class="description">
-Оранжерея использовалась для выращивания экзотических растений, не приспособленных к климату северного региона. 
-Она являлась частью хозяйственной и декоративной инфраструктуры дворцового комплекса.
-
-Конструкция здания предусматривала большие остеклённые поверхности, обеспечивающие доступ света. 
-Это решение одновременно выполняло утилитарную и эстетическую функцию.
-
-Оранжерея дополняла парковую композицию и усиливала визуальную глубину пространства.
-</p>
-
 </div>
 </div>
 
-<!-- ================= CARD 4 ================= -->
-<div class="card reveal reverse" data-step="4" id="step-4">
+<br>
 
+<div class="card reveal" data-step="4">
+<img src="images/pavilion.jpg" alt="">
 <div class="card-content">
-<h2>Музыкальный павильон</h2>
-<p class="subtitle">Культурная зона</p>
-
-<div class="meta">
-<div><span>Дата:</span> XIX век</div>
-<div><span>Архитектор:</span> Не установлен</div>
-<div><span>Тип:</span> Павильон</div>
+<div class="badge">Павильон</div>
+<h2>Павильон</h2>
+</div>
 </div>
 
-<p class="description">
-Музыкальный павильон служил площадкой для проведения концертов и культурных мероприятий. 
-Он был важным элементом общественной жизни дворянской среды.
+<br>
 
-Архитектура павильона ориентирована на открытость и взаимодействие с окружающим пространством. 
-Это обеспечивало акустические преимущества и визуальную связь с природным ландшафтом.
-
-Подобные объекты формировали культурную идентичность парков и общественных пространств.
-</p>
-
-</div>
-
-<div class="card-image">
-<img src="images/pier.jpg">
-<div class="overlay"></div>
-<div class="tag">Павильон</div>
-</div>
-
-</div>
-
-<!-- ================= CARD 5 ================= -->
-<div class="card reveal" data-step="5" id="step-5">
-
-<div class="card-image">
-<img src="images/other.jpg">
-<div class="overlay"></div>
-<div class="tag">Финал</div>
-</div>
-
+<div class="card reveal" data-step="5">
+<img src="images/lions.jpg" alt="">
 <div class="card-content">
-<h2>Пристань</h2>
-<p class="subtitle">Транспортный узел</p>
-
-<div class="meta">
-<div><span>Тип:</span> Инфраструктура</div>
-</div>
-
-<p class="description">
-Пристань завершает маршрут и выполняет транспортную функцию. 
-Она связывает территорию острова с водными маршрутами города.
-
-Это место также служит визуальной точкой завершения прогулочного маршрута, объединяя природную и архитектурную среду в единую композицию.
-</p>
-
+<div class="badge">Набережная</div>
+<h2>Пристань со львами</h2>
 </div>
 </div>
 
 </div>
 
-<!-- ================= EXTRA SECTIONS (для масштабирования) ================= -->
-
-<section class="info-block">
-<h2>Исторический контекст</h2>
-<p>
-Дворцово-парковый ансамбль формировался в эпоху расцвета классицизма. Архитектура подчинялась принципам симметрии, логики и пропорции.
-</p>
-</section>
-
-<section class="info-block">
-<h2>Архитектурные особенности</h2>
-<p>
-Главной особенностью ансамбля является единство архитектуры и ландшафта. Все элементы подчинены общей композиции.
-</p>
-</section>
-
-<section class="info-block">
-<h2>Значение объекта</h2>
-<p>
-Комплекс представляет культурную и историческую ценность, являясь примером гармоничного взаимодействия архитектуры и природы.
-</p>
-</section>
-
-<!-- ДУБЛИРУЕМЫЙ БЛОК (можно копировать сколько угодно для увеличения строк) -->
-<section class="info-block">
-<h2>Дополнительная информация</h2>
-<p>
-Этот блок можно дублировать для расширения контента. Он помогает увеличить объём страницы и насыщенность информации.
-</p>
-</section>
-
-<section class="info-block">
-<h2>Дополнительная информация 2</h2>
-<p>
-Используется для масштабирования проекта и добавления аналитических или описательных данных.
-</p>
-</section>
-
-<section class="info-block">
-<h2>Дополнительная информация 3</h2>
-<p>
-Каждый такой блок может содержать исторические данные, аналитические заметки или расширенные описания объектов.
-</p>
-</section>
-
-<!-- ================= MAP ================= -->
 <div class="section" id="map-section">
 <h2>Карта маршрута</h2>
 <div id="map"></div>
 </div>
 
-</div>
-
-<!-- ================= SCRIPTS ================= -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.min.js"></script>
-<script src="script.js"></script>
+
+<script>
+
+// MAP
+const map = L.map('map').setView([59.985, 30.26], 15);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// REAL COORDINATES
+const points = [
+    [59.9856, 30.2572],
+    [59.9862, 30.2598],
+    [59.9871, 30.2629],
+    [59.9847, 30.2623],
+    [59.9826, 30.2586]
+];
+
+// MARKERS
+points.forEach((p, i) => {
+    const marker = L.marker(p).addTo(map);
+    marker.on("click", () => highlightStep(i+1));
+});
+
+// ROUTE LINE
+let polyline = L.polyline([], {color: '#22d3ee', weight: 3}).addTo(map);
+
+let i = 0;
+function drawLine() {
+    if(i < points.length) {
+        polyline.addLatLng(points[i]);
+        i++;
+        setTimeout(drawLine, 500);
+    }
+}
+drawLine();
+
+// ARROWS
+setTimeout(() => {
+    const decorator = L.polylineDecorator(polyline, {
+        patterns: [
+            {
+                offset: 10,
+                repeat: 25,
+                symbol: L.Symbol.arrowHead({
+                    pixelSize: 10,
+                    polygon: false,
+                    pathOptions: {stroke: true}
+                })
+            }
+        ]
+    }).addTo(map);
+}, 3000);
+
+// STORY HIGHLIGHT
+const steps = document.querySelectorAll(".card");
+
+function highlightStep(id){
+    steps.forEach(s => s.classList.remove("active-step"));
+    const el = document.querySelector(`[data-step="${id}"]`);
+    if(el){
+        el.classList.add("active-step");
+        el.scrollIntoView({behavior:"smooth", block:"center"});
+    }
+}
+
+// SCROLL STORY
+window.addEventListener("scroll", () => {
+    steps.forEach((el, index) => {
+        const rect = el.getBoundingClientRect();
+        if(rect.top < window.innerHeight * 0.7){
+            el.classList.add("active-step");
+            map.setView(points[index], 16);
+        }
+    });
+});
+
+// REVEAL
+const reveals = document.querySelectorAll(".reveal");
+
+window.addEventListener("scroll", () => {
+    reveals.forEach(el => {
+        if(el.getBoundingClientRect().top < window.innerHeight - 100){
+            el.classList.add("active");
+        }
+    });
+});
+
+</script>
 
 </body>
 </html>
