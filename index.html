@@ -326,94 +326,130 @@ nav {
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.min.js"></script>
-
 <script>
 
-// MAP
+// ===== КАРТА =====
 const map = L.map('map').setView([59.985, 30.26], 15);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-// REAL COORDINATES
+// ===== ТОЧКИ =====
 const points = [
-    [59.9856, 30.2572],
-    [59.9862, 30.2598],
-    [59.9871, 30.2629],
-    [59.9847, 30.2623],
-    [59.9826, 30.2586]
+    [59.979444, 30.270000],
+    [59.9797, 30.2686],
+    [59.9803, 30.2692],
+    [59.9767, 30.2686],
+    [59.9803, 30.2664]
 ];
 
-// MARKERS
+// ===== ОПИСАНИЕ =====
+const info = [
+    {title: "Елагин дворец", fact: "Императорская резиденция"},
+    {title: "Кухонный корпус", fact: "Здание кухни"},
+    {title: "Оранжерея", fact: "Экзотические растения"},
+    {title: "Музыкальный павильон", fact: "Живая музыка"},
+    {title: "Пристань", fact: "Финал маршрута"}
+];
+
+// ===== МАРКЕРЫ =====
+let markers = [];
+
 points.forEach((p, i) => {
-    const marker = L.marker(p).addTo(map);
-    marker.on("click", () => highlightStep(i+1));
+
+    const icon = L.divIcon({
+        className: "custom-marker",
+        html: `<div class="marker-number">${i + 1}</div>`
+    });
+
+    const marker = L.marker(p, {icon})
+        .addTo(map)
+        .bindPopup(`<b>${info[i].title}</b><br>${info[i].fact}`);
+
+    marker.on("click", () => goToStep(i));
+
+    markers.push(marker);
 });
 
-// ROUTE LINE
-let polyline = L.polyline([], {color: '#22d3ee', weight: 3}).addTo(map);
+// ===== ЛИНИЯ =====
+let polyline = L.polyline([], {
+    color: '#38bdf8',
+    weight: 5
+}).addTo(map);
 
+let decorator;
+
+// ===== АНИМАЦИЯ =====
 let i = 0;
-function drawLine() {
-    if(i < points.length) {
-        polyline.addLatLng(points[i]);
-        i++;
-        setTimeout(drawLine, 500);
-    }
-}
-drawLine();
 
-// ARROWS
-setTimeout(() => {
-    const decorator = L.polylineDecorator(polyline, {
-        patterns: [
-            {
-                offset: 10,
-                repeat: 25,
-                symbol: L.Symbol.arrowHead({
-                    pixelSize: 10,
-                    polygon: false,
-                    pathOptions: {stroke: true}
-                })
-            }
-        ]
+function drawRoute() {
+
+    if (i >= points.length) return;
+
+    polyline.addLatLng(points[i]);
+
+    if (decorator) map.removeLayer(decorator);
+
+    decorator = L.polylineDecorator(polyline, {
+        patterns: [{
+            offset: 20,
+            repeat: 50,
+            symbol: L.Symbol.arrowHead({
+                pixelSize: 12,
+                pathOptions: { color: '#38bdf8' }
+            })
+        }]
     }).addTo(map);
-}, 3000);
 
-// STORY HIGHLIGHT
-const steps = document.querySelectorAll(".card");
+    highlightCard(i);
+    map.setView(points[i], 16);
 
-function highlightStep(id){
-    steps.forEach(s => s.classList.remove("active-step"));
-    const el = document.querySelector(`[data-step="${id}"]`);
-    if(el){
-        el.classList.add("active-step");
-        el.scrollIntoView({behavior:"smooth", block:"center"});
-    }
+    i++;
+    setTimeout(drawRoute, 900);
 }
 
-// SCROLL STORY
+setTimeout(drawRoute, 800);
+
+// ===== ПОДСВЕТКА =====
+const cards = document.querySelectorAll(".card");
+
+function highlightCard(index) {
+
+    cards.forEach(c => c.classList.remove("active-step"));
+    markers.forEach(m => m.setOpacity(0.5));
+
+    const card = document.getElementById(`step-${index + 1}`);
+
+    if (card) {
+        card.classList.add("active-step");
+        card.scrollIntoView({ block: "center" });
+    }
+
+    markers[index].setOpacity(1);
+}
+
+// ===== КЛИК =====
+function goToStep(index) {
+    highlightCard(index);
+    map.setView(points[index], 16);
+    markers[index].openPopup();
+}
+
+// ===== СКРОЛЛ =====
 window.addEventListener("scroll", () => {
-    steps.forEach((el, index) => {
-        const rect = el.getBoundingClientRect();
-        if(rect.top < window.innerHeight * 0.7){
-            el.classList.add("active-step");
+
+    cards.forEach((card, index) => {
+
+        const rect = card.getBoundingClientRect();
+
+        if (rect.top < window.innerHeight * 0.6) {
+            highlightCard(index);
             map.setView(points[index], 16);
         }
-    });
-});
 
-// REVEAL
-const reveals = document.querySelectorAll(".reveal");
-
-window.addEventListener("scroll", () => {
-    reveals.forEach(el => {
-        if(el.getBoundingClientRect().top < window.innerHeight - 100){
-            el.classList.add("active");
-        }
     });
+
 });
 
 </script>
-
 </body>
 </html>
